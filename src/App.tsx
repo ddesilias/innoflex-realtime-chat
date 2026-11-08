@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "convex/react";
 // For demo purposes. In a real app, you'd have real user data.
 const NAME = getOrSetFakeName();
 
-export default function App() {
+function ConnectedApp() {
   const messages = useQuery(api.chat.getMessages);
   const sendMessage = useMutation(api.chat.sendMessage);
 
@@ -70,4 +70,19 @@ function getOrSetFakeName() {
     return newName;
   }
   return name;
+}
+
+export default function App() {
+  if (!import.meta.env.VITE_CONVEX_URL) {
+    return (
+      <main className="chat">
+        <header><h1>Convex Chat</h1><p>Service non configuré — mode démonstration</p></header>
+        <form onSubmit={(event) => event.preventDefault()}>
+          <input placeholder="Write a message…" disabled aria-label="Message indisponible en démonstration" />
+          <button type="submit" disabled>Send</button>
+        </form>
+      </main>
+    );
+  }
+  return <ConnectedApp />;
 }
